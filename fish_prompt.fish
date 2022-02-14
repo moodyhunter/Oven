@@ -192,7 +192,7 @@ function _git_status -d 'Check git status'
     set renamed_count (echo -sn $git_status\n | egrep -c "R.")
     set modified_count (echo -sn $git_status\n | egrep -c ".[MT]")
     set unmerged_count (echo -sn $git_status\n | egrep -c "AA | DD | U. | .U")
-    set untracked_count (echo -sn $git_status\n | egrep -c "\?\?")
+    set untracked_count (git ls-files --others --exclude-standard | wc -l)
 
     if [ $added_count -gt 0 ]
         echo -n (_col green)$ICON_VCS_STAGED$added_count(_col_res)" "
