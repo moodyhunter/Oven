@@ -186,11 +186,11 @@ function _git_status -d 'Check git status'
 
     set -l git_status (command git status --porcelain 2> /dev/null | cut -c 1-2)
 
-    set added_count (echo -sn $git_status\n | egrep -c "[ACDMT][ MT]|[ACMT]D")
+    set added_count (echo -sn $git_status\n | grep -E -c "[ACDMT][ MT]|[ACMT]D")
     set stash_count (git rev-parse --verify --quiet refs/stash 2> /dev/null| wc -l)
-    set deleted_count (echo -sn $git_status\n | egrep -c "[ ACMRT]D")
-    set renamed_count (echo -sn $git_status\n | egrep -c "R.")
-    set modified_count (echo -sn $git_status\n | egrep -c ".[MT]")
+    set deleted_count (echo -sn $git_status\n | grep -E -c "[ ACMRT]D")
+    set renamed_count (echo -sn $git_status\n | grep -E -c "R.")
+    set modified_count (echo -sn $git_status\n | grep -E -c ".[MT]")
     set unmerged_count (git diff --name-only --diff-filter=U | wc -l)
     set untracked_count (git ls-files --others --exclude-standard | wc -l)
 
