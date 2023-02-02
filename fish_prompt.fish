@@ -185,6 +185,7 @@ function _git_status -d 'Check git status'
     _col_res #show # of commits ahead/behind
 
     set -l git_status (command git status --porcelain 2> /dev/null | cut -c 1-2)
+    set -l git_root (command git rev-parse --show-toplevel 2> /dev/null)
 
     set added_count (echo -sn $git_status\n | grep -E -c "[ACDMT][ MT]|[ACMT]D")
     set stash_count (git rev-parse --verify --quiet refs/stash 2> /dev/null| wc -l)
@@ -192,7 +193,7 @@ function _git_status -d 'Check git status'
     set renamed_count (echo -sn $git_status\n | grep -E -c "R.")
     set modified_count (echo -sn $git_status\n | grep -E -c ".[MT]")
     set unmerged_count (git diff --name-only --diff-filter=U | wc -l)
-    set untracked_count (git ls-files --others --exclude-standard | wc -l)
+    set untracked_count (git ls-files --others --exclude-standard --directory $git_root | wc -l)
 
     if [ $added_count -gt 0 ]
         echo -n (_col green)$ICON_VCS_STAGED$added_count(_col_res)" "
