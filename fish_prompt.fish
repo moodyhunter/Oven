@@ -33,6 +33,14 @@ function fish_prompt
     else
         _col brred b
     end
+
+    # test if DISTROBOX_ENTER_PATH is set
+    if set -q -x DISTROBOX_ENTER_PATH
+        echo -n "[📥] "
+    else
+        echo -n ""
+    end
+
     echo (_UserSymbol)(_col_res)" "
 end
 
