@@ -36,12 +36,12 @@ function fish_prompt
 
     # test if DISTROBOX_ENTER_PATH is set
     if set -q -x DISTROBOX_ENTER_PATH
-        echo -n "[📥] "
+        echo -n "📥>"
     else
-        echo -n ""
+        echo -n (_UserSymbol)
     end
 
-    echo (_UserSymbol)(_col_res)" "
+    echo (_col_res)" "
 end
 
 function fish_right_prompt
