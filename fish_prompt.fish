@@ -56,7 +56,7 @@ function fish_right_prompt
         echo -n " $ICON_JOBS "
     end
 
-    if _is_git_folder #show only if in a git folder
+    if _is_git_folder
         set git_sha (_git_prompt_short_sha)
         echo -n -s " $git_sha" # -n no newline -s no space separation
     end
@@ -251,6 +251,9 @@ function _git_branch -d "Display the current git state"
 end
 
 function _is_git_folder -d "Check if current folder is a git folder"
+    if [ "$oven_no_git" ]
+        return 1
+    end
     git status 1>/dev/null 2>/dev/null
 end
 
