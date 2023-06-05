@@ -132,9 +132,9 @@ end
 
 function prompt_pwd2
     set realhome ~
-    set -l _tmp (string replace -r '^'"$realhome"'($|/)' '~$1' $PWD) #replace $HOME with '~' in path
-    set -l _tmp2 (basename (dirname $_tmp))/(basename $_tmp) #get last two dirs from path
-    echo (string trim -l -c=/ (string replace "./~" "~" $_tmp2)) #trim left '/' or './' for special cases
+    set -l _tmp (string replace -r '^'"$realhome"'($|/)' '~$1' -- $PWD) #replace $HOME with '~' in path
+    set -l _tmp2 (basename -- (dirname -- $_tmp))/(basename -- $_tmp) #get last two dirs from path
+    echo (string trim -l -c=/ -- (string replace "./~" "~" -- $_tmp2)) #trim left '/' or './' for special cases
 end
 
 function prompt_pwd_full
