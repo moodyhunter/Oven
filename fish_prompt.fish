@@ -187,12 +187,13 @@ end
 function _prompt_git -a current_dir -d 'Display the actual git state'
     echo -n -s (_git_branch)(_git_status)(_col_res)
 end
+
 function _git_status -d 'Check git status'
     echo -n " "
     _git_ahead_verbose
     _col_res #show # of commits ahead/behind
 
-    set -l git_status (command git status --porcelain 2> /dev/null | cut -c 1-2)
+    set -l git_status (command git status --ignore-submodules --porcelain 2> /dev/null | cut -c 1-2)
     set -l git_root (command git rev-parse --show-toplevel 2> /dev/null)
 
     set added_count (echo -sn $git_status\n | grep -E -c "[ACDMT][ MT]|[ACMT]D")
@@ -200,8 +201,8 @@ function _git_status -d 'Check git status'
     set deleted_count (echo -sn $git_status\n | grep -E -c "[ ACMRT]D")
     set renamed_count (echo -sn $git_status\n | grep -E -c "R.")
     set modified_count (echo -sn $git_status\n | grep -E -c ".[MT]")
-    set unmerged_count (git diff --name-only --diff-filter=U | wc -l)
-    set untracked_count (git ls-files --others --exclude-standard --directory $git_root | wc -l)
+    set unmerged_count (git diff --name-only --diff-filter=U --ignore-submodules | wc -l)
+    set untracked_count (git ls-files --others --exclude-standard $git_root | wc -l)
 
     if [ $added_count -gt 0 ]
         echo -n (_col green)$ICON_VCS_STAGED$added_count(_col_res)" "
@@ -254,7 +255,7 @@ function _is_git_folder -d "Check if current folder is a git folder"
     if [ "$oven_no_git" ]
         return 1
     end
-    git status 1>/dev/null 2>/dev/null
+    git status --ignore-submodules 1>/dev/null 2>/dev/null
 end
 
 function _git_ahead_verbose -d 'Print a more verbose ahead/behind state for the current branch'
@@ -324,66 +325,3 @@ function _icons_initialize
 end
 
 set -g CMD_DURATION 0
-
-#Additional info
-#set -l time (date '+%I:%M'); #set -l time_info (_col blue)($time)(_col_res); #echo -n -s $time_info
-#function print_blank_line() {
-#    if git rev-parse --git-dir > /dev/null 2>&1
-#     echo -e "n"
-#    else
-#     echo -n "b"
-#    end
-#end
-# use this to enable users to see their ruby version, no matter which version management system they use
-#function ruby_prompt_info
-#  echo $(rvm_prompt_info || rbenv_prompt_info || chruby_prompt_info)
-#end
-
-#bash
-# echo "$(rbenv gemset active 2&>/dev/null | sed -e ":a" -e '$ s/\n/+/gp;N;b a' | head -n1)"
-# fenv echo "\$(rbenv gemset active 2\&>/dev/null | sed -e ":a" -e '\$ s/\n/+/gp;N;b a' | head -n1)"
-# bass echo "\$(rbenv gemset active 2\&>/dev/null | sed -e ":a" -e '\$ s/\n/+/gp;N;b a' | head -n1)"
-#Run command in background: command &
-#0 is stdin. 1 is stdout. 2 is stderr.
-#Redirect STDERR to STDOUT: command 2>&1
-#One method of combining multiple commands is to use a -e before each command
-#sed -e 's/a/A/' -e 's/b/B/' <old >new
-#:label
-#' to turn quoting on/off, so '$ is
-#g get; p print; N next
-#head -n1         #print 1 line of a file to stdout
-#end
-
-#current_gemset alternativ
-#  else if test (rbenv gemset active >/dev/null 2>&1) = "no active gemsets" # not sure what 2>&1
-#  else
-#    set -l active_gemset (string split -m1 " " (rbenv gemset active))
-#    echo $active_gemset[1]
-#
-#  set -l active_gemset (rbenv gemset active 2> /dev/null)
-#  if test -z "$active_gemset"
-#  else if test $active_gemset = "no active gemsets"
-#    else
-#      set -l active_gemset (string split -m1 " " $active_gemset)
-#      echo $active_gemset[1]
-#  end
-# echo (rbenv gemset active 2&>/dev/null | sed -e ":a" -e '$ s/\n/+/gp;N;b a' | head -n1)
-# if [ ]
-
-#The short summary is that if $VAR is not set, then test -n $VAR is equivalent to test -n, and POSIX requires that we just  check if that one argument (the -n) is not null.
-#1. if test -n "$SSH_CLIENT" # You can fix it by quoting, which forces an argument even if it's empty:
-#2. test -n (EXPRESSION; or echo "")
-#3. use count
-
-
-
-#function __bobthefish_prompt_user -d 'Display actual user if different from $default_user'
-#  if [ "$theme_display_user" = 'yes' ]
-#    if [ "$USER" != "$default_user" -o -n "$SSH_CLIENT" ]
-#      __bobthefish_start_segment $__bobthefish_lt_grey $__bobthefish_slate_blue
-#      echo -n -s (whoami) '@' (hostname | cut -d . -f 1) ' '
-#    end
-#  end
-#end
-
-#echo "Python 3.5.0" | cut -d ' ' -f 2 2>/dev/null        #-d use DELIM instead of tabs, -f print line without delims
